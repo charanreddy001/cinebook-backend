@@ -47,7 +47,7 @@ public class BookingService {
         Booking booking = new Booking();
         booking.setUser(bookingRequest.getUser());
         booking.setShow(seats.get(0).getShow());
-        booking.setTotal_amount(bookingRequest.getTotalAmount());
+        booking.setTotalAmount(bookingRequest.getTotalAmount());
         booking.setCreatedAt(LocalDateTime.now());
         booking.setIdempotencyKey(bookingRequest.getIdempotencyKey());
         booking.setStatus(BookingStatus.PENDING);

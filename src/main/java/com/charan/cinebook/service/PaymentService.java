@@ -18,7 +18,7 @@ public class PaymentService {
     public Payment processPayment(Booking booking) {
         Payment payment = new Payment();
 
-        payment.setAmount(booking.getTotal_amount());
+        payment.setAmount(booking.getTotalAmount());
         payment.setBooking(booking);
         payment.setTransactionId(UUID.randomUUID().toString());
 
