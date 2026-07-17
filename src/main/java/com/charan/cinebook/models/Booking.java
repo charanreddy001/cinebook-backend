@@ -23,7 +23,7 @@ public class Booking {
     @JoinColumn(name = "show_id")
     private Show show;
 
-    private BigDecimal total_amount;
+    private BigDecimal totalAmount;
 
     @Enumerated(EnumType.STRING)
     private BookingStatus status;
@@ -32,4 +32,8 @@ public class Booking {
     private String idempotencyKey;
 
     private LocalDateTime createdAt;
+    @PrePersist
+    public void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 }

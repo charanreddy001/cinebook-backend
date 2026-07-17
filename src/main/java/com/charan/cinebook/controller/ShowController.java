@@ -1,12 +1,7 @@
 package com.charan.cinebook.controller;
 
-import com.charan.cinebook.models.Seat;
-import com.charan.cinebook.models.SeatStatus;
-import com.charan.cinebook.models.Show;
-import com.charan.cinebook.models.ShowSeat;
-import com.charan.cinebook.repository.SeatRepository;
-import com.charan.cinebook.repository.ShowRepository;
-import com.charan.cinebook.repository.ShowSeatRepository;
+import com.charan.cinebook.models.*;
+import com.charan.cinebook.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,9 +20,24 @@ public class ShowController {
     @Autowired
     private SeatRepository seatRepository;
 
+    @Autowired
+    private MovieRepository movieRepository;
+
+    @Autowired
+    private ScreenRepository screenRepository;
+
     @PostMapping
     public Show create(@RequestBody Show show) {
         Show savedShow = showRepository.save(show);
+        Movie movie = movieRepository.findById(show.getMovie().getId())
+                .orElseThrow(() -> new RuntimeException("movie Not Found"));
+
+        Screen screen = screenRepository.findById(show.getScreen().getId())
+                .orElseThrow(() -> new RuntimeException("screen not found"));
+
+        show.setMovie(movie);
+        show.setScreen(screen);
+
         // when we create a new show then we can say all the seats are empty initially
         List<Seat> seats = seatRepository.findByScreenId(savedShow.getScreen().getId());
         for(Seat seat : seats) {
@@ -55,6 +65,16 @@ public class ShowController {
     public Show update(@PathVariable Long id, @RequestBody Show updated) {
         Show show = showRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Show not found"));
+
+        Movie movie = movieRepository.findById(updated.getMovie().getId())
+                        .orElseThrow(() -> new RuntimeException("Movie Not Found"));
+
+        Screen screen = screenRepository.findById(updated.getScreen().getId())
+                        .orElseThrow(() -> new RuntimeException("Screen Not Found"));
+
+        updated.setScreen(screen);
+        updated.setMovie(movie);
+
         show.setMovie(updated.getMovie());
         show.setScreen(updated.getScreen());
         show.setStartTime(updated.getStartTime());

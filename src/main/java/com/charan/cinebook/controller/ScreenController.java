@@ -1,7 +1,9 @@
 package com.charan.cinebook.controller;
 
 import com.charan.cinebook.models.Screen;
+import com.charan.cinebook.models.Theatre;
 import com.charan.cinebook.repository.ScreenRepository;
+import com.charan.cinebook.repository.TheatreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,8 +16,15 @@ public class ScreenController {
     @Autowired
     private ScreenRepository screenRepository;
 
+    @Autowired
+    private TheatreRepository theatreRepository;
+
     @PostMapping
     public Screen create(@RequestBody Screen screen) {
+
+        Theatre theatre = theatreRepository.findById(screen.getTheatre().getId())
+                .orElseThrow(() -> new RuntimeException("Theatre Not Found"));
+        screen.setTheatre(theatre);
         return screenRepository.save(screen);
     }
 
@@ -32,6 +41,11 @@ public class ScreenController {
     @PutMapping("/{id}")
     public Screen update(@PathVariable Long id,@RequestBody Screen update) {
         Screen screen = screenRepository.findById(id).orElseThrow(() -> new RuntimeException("Screen Not Found"));
+
+        Theatre theatre = theatreRepository.findById(update.getTheatre().getId())
+                        .orElseThrow(() -> new RuntimeException("Theatre Not Found"));
+
+        screen.setTheatre(theatre);
         screen.setName(update.getName());
         screen.setTheatre(update.getTheatre());
         return screenRepository.save(screen);
